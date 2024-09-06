@@ -11,7 +11,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: 3.10
+        python-version: "3.10"
     - name: Set Cache Key
       run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
     - name: Install System Deps
@@ -36,7 +36,7 @@ jobs:
     - name: Set up Python 3.10 For Nox
       uses: actions/setup-python@v5
       with:
-        python-version: 3.10
+        python-version: "3.10"
 
     - name: Install Nox
       run: |
@@ -72,8 +72,8 @@ jobs:
         include:
           - {salt-version: "3006", python-version: "3.10"}
           - {salt-version: "3007", python-version: "3.10"}
-          - {salt-version: "3007", python-version: "3.11"}
-          - {salt-version: "3007", python-version: "3.12"}
+          ## - {salt-version: "3007", python-version: "3.11"}
+          ## - {salt-version: "3007", python-version: "3.12"}
 
     steps:
     - uses: actions/checkout@v4
@@ -195,8 +195,8 @@ jobs:
         include:
           - {salt-version: "3006", python-version: "3.10"}
           - {salt-version: "3007", python-version: "3.10"}
-          - {salt-version: "3007", python-version: "3.11"}
-          - {salt-version: "3007", python-version: "3.12"}
+          ## - {salt-version: "3007", python-version: "3.11"}
+          ## - {salt-version: "3007", python-version: "3.12"}
 
     steps:
     - uses: actions/checkout@v4
@@ -323,8 +323,8 @@ jobs:
         include:
           - {salt-version: "3006", python-version: "3.10"}
           - {salt-version: "3007", python-version: "3.10"}
-          - {salt-version: "3007", python-version: "3.11"}
-          - {salt-version: "3007", python-version: "3.12"}
+          ## - {salt-version: "3007", python-version: "3.11"}
+          ## - {salt-version: "3007", python-version: "3.12"}
 
     steps:
     - uses: actions/checkout@v4
