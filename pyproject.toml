@@ -35,7 +35,7 @@ classifiers = [
 requires-python = ">= 3.10"
 dynamic = ["version"]
 dependencies = [
-    "salt>=3006",
+    "salt>=3006.8",
 ]
 
 [project.readme]

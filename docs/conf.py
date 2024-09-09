@@ -42,10 +42,10 @@ dist = distribution("saltext.cassandra")
 
 # -- Project information -----------------------------------------------------
 this_year = datetime.datetime.today().year
-if this_year == 2021:
-    copyright_year = 2021
+if this_year == 2024:
+    copyright_year = "2024"
 else:
-    copyright_year = f"2021 - {this_year}"
+    copyright_year = f"2024 - {this_year}"
 project = dist.metadata["Summary"]
 author = dist.metadata.get("Author")
 
