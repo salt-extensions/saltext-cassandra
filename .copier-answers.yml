@@ -12,12 +12,12 @@ license: apache
 loaders:
   - module
   - returner
-max_salt_version: 3007
+max_salt_version: 3007.1
 no_saltext_namespace: false
 package_name: cassandra
 project_name: cassandra
 python_requires: '3.10'
-salt_version: '3006'
+salt_version: '3006.8'
 source_url: https://github.com/salt-extensions/saltext-cassandra
 ssh_fixtures: true
 summary: Salt Extension for interacting with Cassandra
