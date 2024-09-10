@@ -5,13 +5,16 @@ Test case for the cassandra_cql module
 import logging
 import ssl
 
+## from tests.support.mock import MagicMock
+## from tests.support.mock import patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
+
 import pytest
 from salt.exceptions import CommandExecutionError
 
 ## import salt.modules.cassandra_cql as cassandra_cql
 import saltext.cassandra.modules.cassandra_cql as cassandra_cql
-from tests.support.mock import MagicMock
-from tests.support.mock import patch
 
 log = logging.getLogger(__name__)
 
