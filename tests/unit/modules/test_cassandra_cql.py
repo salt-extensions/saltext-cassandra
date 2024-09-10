@@ -4,9 +4,6 @@ Test case for the cassandra_cql module
 
 import logging
 import ssl
-
-## from tests.support.mock import MagicMock
-## from tests.support.mock import patch
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
