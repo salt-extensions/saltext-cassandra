@@ -25,3 +25,5 @@ test_containers: true
 tracker_url: https://github.com/salt-extensions/saltext-cassandra/issues
 url: https://github.com/salt-extensions/saltext-cassandra
 workflows: basic
+
+#copier updated
