@@ -2,6 +2,8 @@
 Test case for the cassandra_cql module
 """
 
+# pylint: disable=W0613,R0402
+
 import logging
 import ssl
 from unittest.mock import MagicMock

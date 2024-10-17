@@ -93,6 +93,8 @@ queries based on the internal schema of said version.
 
 """
 
+# pylint: disable=W0613,W0612,R1719,R1710
+
 import logging
 import re
 import ssl
@@ -176,8 +178,8 @@ def _get_lbp_policy(name, **policy_args):
     """
     if name in LOAD_BALANCING_POLICY_MAP:
         return LOAD_BALANCING_POLICY_MAP.get(name)(**policy_args)
-    else:
-        log.error("The policy %s is not available", name)
+
+    log.error("The policy %s is not available", name)
 
 
 def _load_properties(property_name, config_option, set_default=False, default=None):
@@ -236,11 +238,11 @@ def _get_ssl_opts():
                     "that the ssl protocol version is one from the SSL "
                     "fmodule. Valid options are {valid_opts}"
                 )
-            else:
-                ssl_opts[SSL_VERSION] = getattr(ssl, sslopts[SSL_VERSION])
+
+            ssl_opts[SSL_VERSION] = getattr(ssl, sslopts[SSL_VERSION])
         return ssl_opts
-    else:
-        return None
+
+    return None
 
 
 def _connect(
@@ -297,106 +299,106 @@ def _connect(
             __context__["cassandra_cql_returner_cluster"],
             __context__["cassandra_cql_returner_session"],
         )
-    else:
-        if contact_points is None:
-            contact_points = _load_properties(property_name=contact_points, config_option="cluster")
-        contact_points = (
-            contact_points if isinstance(contact_points, list) else contact_points.split(",")
+
+    if contact_points is None:
+        contact_points = _load_properties(property_name=contact_points, config_option="cluster")
+    contact_points = (
+        contact_points if isinstance(contact_points, list) else contact_points.split(",")
+    )
+    if port is None:
+        port = _load_properties(
+            property_name=port, config_option="port", set_default=True, default=9042
         )
-        if port is None:
-            port = _load_properties(
-                property_name=port, config_option="port", set_default=True, default=9042
-            )
-        if cql_user is None:
-            cql_user = _load_properties(
-                property_name=cql_user,
-                config_option="username",
-                set_default=True,
-                default="cassandra",
-            )
-        if cql_pass is None:
-            cql_pass = _load_properties(
-                property_name=cql_pass,
-                config_option="password",
-                set_default=True,
-                default="cassandra",
-            )
-        if protocol_version is None:
-            protocol_version = _load_properties(
-                property_name=protocol_version,
-                config_option="protocol_version",
-                set_default=True,
-                default=4,
-            )
+    if cql_user is None:
+        cql_user = _load_properties(
+            property_name=cql_user,
+            config_option="username",
+            set_default=True,
+            default="cassandra",
+        )
+    if cql_pass is None:
+        cql_pass = _load_properties(
+            property_name=cql_pass,
+            config_option="password",
+            set_default=True,
+            default="cassandra",
+        )
+    if protocol_version is None:
+        protocol_version = _load_properties(
+            property_name=protocol_version,
+            config_option="protocol_version",
+            set_default=True,
+            default=4,
+        )
 
-        if load_balancing_policy_args is None:
-            load_balancing_policy_args = _load_properties(
-                property_name=load_balancing_policy_args,
-                config_option="load_balancing_policy_args",
-                set_default=True,
-                default={},
-            )
+    if load_balancing_policy_args is None:
+        load_balancing_policy_args = _load_properties(
+            property_name=load_balancing_policy_args,
+            config_option="load_balancing_policy_args",
+            set_default=True,
+            default={},
+        )
 
-        if load_balancing_policy is None:
-            load_balancing_policy = _load_properties(
-                property_name=load_balancing_policy,
-                config_option="load_balancing_policy",
-                set_default=True,
-                default="RoundRobinPolicy",
-            )
+    if load_balancing_policy is None:
+        load_balancing_policy = _load_properties(
+            property_name=load_balancing_policy,
+            config_option="load_balancing_policy",
+            set_default=True,
+            default="RoundRobinPolicy",
+        )
 
-        if load_balancing_policy_args:
-            lbp_policy_cls = _get_lbp_policy(load_balancing_policy, **load_balancing_policy_args)
+    if load_balancing_policy_args:
+        lbp_policy_cls = _get_lbp_policy(load_balancing_policy, **load_balancing_policy_args)
+    else:
+        lbp_policy_cls = _get_lbp_policy(load_balancing_policy)
+
+    try:
+        auth_provider = PlainTextAuthProvider(username=cql_user, password=cql_pass)
+        if ssl_options is None:
+            ssl_opts = _get_ssl_opts()
         else:
-            lbp_policy_cls = _get_lbp_policy(load_balancing_policy)
+            ssl_opts = ssl_options
+        if ssl_opts:
+            cluster = Cluster(
+                contact_points,
+                port=port,
+                auth_provider=auth_provider,
+                ssl_options=ssl_opts,
+                protocol_version=protocol_version,
+                load_balancing_policy=lbp_policy_cls,
+                compression=True,
+            )
+        else:
+            cluster = Cluster(
+                contact_points,
+                port=port,
+                auth_provider=auth_provider,
+                protocol_version=protocol_version,
+                load_balancing_policy=lbp_policy_cls,
+                compression=True,
+            )
+        for recontimes in range(1, 4):
+            try:
+                session = cluster.connect()
+                break
+            except OperationTimedOut:
+                log.warning("Cassandra cluster.connect timed out, try %s", recontimes)
+                if recontimes >= 3:
+                    raise
 
-        try:
-            auth_provider = PlainTextAuthProvider(username=cql_user, password=cql_pass)
-            if ssl_options is None:
-                ssl_opts = _get_ssl_opts()
-            else:
-                ssl_opts = ssl_options
-            if ssl_opts:
-                cluster = Cluster(
-                    contact_points,
-                    port=port,
-                    auth_provider=auth_provider,
-                    ssl_options=ssl_opts,
-                    protocol_version=protocol_version,
-                    load_balancing_policy=lbp_policy_cls,
-                    compression=True,
-                )
-            else:
-                cluster = Cluster(
-                    contact_points,
-                    port=port,
-                    auth_provider=auth_provider,
-                    protocol_version=protocol_version,
-                    load_balancing_policy=lbp_policy_cls,
-                    compression=True,
-                )
-            for recontimes in range(1, 4):
-                try:
-                    session = cluster.connect()
-                    break
-                except OperationTimedOut:
-                    log.warning("Cassandra cluster.connect timed out, try %s", recontimes)
-                    if recontimes >= 3:
-                        raise
+        # TODO: Call cluster.shutdown() when the module is unloaded on shutdown.
+        __context__["cassandra_cql_returner_cluster"] = cluster
+        __context__["cassandra_cql_returner_session"] = session
+        __context__["cassandra_cql_prepared"] = {}
 
-            # TODO: Call cluster.shutdown() when the module is unloaded on shutdown.
-            __context__["cassandra_cql_returner_cluster"] = cluster
-            __context__["cassandra_cql_returner_session"] = session
-            __context__["cassandra_cql_prepared"] = {}
-
-            log.debug("Successfully connected to Cassandra cluster at %s", contact_points)
-            return cluster, session
-        except TypeError:
-            pass
-        except (ConnectionException, ConnectionShutdown, NoHostAvailable) as err:
-            log.error("Could not connect to Cassandra cluster at %s", contact_points)
-            # pylint: disable=W0707
-            raise CommandExecutionError(str(err))
+        log.debug("Successfully connected to Cassandra cluster at %s", contact_points)
+        return cluster, session
+    except TypeError:
+        pass
+    except (ConnectionException, ConnectionShutdown, NoHostAvailable) as err:
+        log.error("Could not connect to Cassandra cluster at %s", contact_points)
+        # pylint: disable=W0707
+        raise CommandExecutionError(str(err))
 
 
 def cql_query(
