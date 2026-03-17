@@ -100,7 +100,6 @@ import re
 import ssl
 
 import salt.utils.json
-import salt.utils.versions
 from salt.exceptions import CommandExecutionError
 
 SSL_VERSION = "ssl_version"
@@ -109,7 +108,6 @@ log = logging.getLogger(__name__)
 
 __virtualname__ = "cassandra_cql"
 
-HAS_DRIVER = False
 try:
     # pylint: disable=import-error,no-name-in-module
     from cassandra.auth import PlainTextAuthProvider
@@ -153,7 +151,7 @@ try:
     }
 
 except ImportError:
-    pass
+    HAS_DRIVER = False
 
 
 def __virtual__():
@@ -236,7 +234,7 @@ def _get_ssl_opts():
                 raise CommandExecutionError(
                     "Invalid protocol_version specified! Please make sure "
                     "that the ssl protocol version is one from the SSL "
-                    "fmodule. Valid options are {valid_opts}"
+                    f"module. Valid options are {valid_opts}"
                 )
 
             ssl_opts[SSL_VERSION] = getattr(ssl, sslopts[SSL_VERSION])
