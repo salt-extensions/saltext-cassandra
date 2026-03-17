@@ -80,11 +80,7 @@ tests = [
     "pytest>=7.2.0",
     "pytest-salt-factories>=1.0.0; sys_platform == 'win32'",
     "pytest-salt-factories[docker]>=1.0.0; sys_platform != 'win32'",
-<<<<<<< before updating
-    "cryptography>=42.0.5",
-=======
     "pytest-instafail",
->>>>>>> after updating
 ]
 
 [project.entry-points."salt.loader"]
