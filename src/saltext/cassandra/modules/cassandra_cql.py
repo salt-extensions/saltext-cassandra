@@ -7,7 +7,7 @@ This module works with Cassandra v2 and v3 and hence generates
 queries based on the internal schema of said version.
 
 :depends: DataStax Python Driver for Apache Cassandra
-          https://github.com/datastax/python-driver
+          https://github.com/apache/cassandra-python-driver
           pip install cassandra-driver
 :referenced by: Salt's cassandra_cql returner
 :configuration:
@@ -39,7 +39,7 @@ queries based on the internal schema of said version.
     Added support for ``ssl_options`` and ``protocol_version``.
 
     Example configuration with
-    `ssl options <http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.ssl_options>`_:
+    `ssl options <https://docs.datastax.com/en/developer/python-driver/latest/api/cassandra/cluster/index.html#cassandra.cluster.Cluster.ssl_options>`_:
 
     If ``ssl_options`` are present in cassandra config the cassandra_cql returner
     will use SSL. SSL isn't used if ``ssl_options`` isn't specified.
@@ -62,7 +62,7 @@ queries based on the internal schema of said version.
             ssl_version: PROTOCOL_TLSv1
 
     Additionally you can also specify the ``protocol_version`` to
-    `use <http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.ssl_options>`_.
+    `use <https://docs.datastax.com/en/developer/python-driver/latest/api/cassandra/cluster/index.html#cassandra.cluster.Cluster.ssl_options>`_.
 
     .. code-block:: yaml
 
