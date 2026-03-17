@@ -8,10 +8,12 @@ import platform
 import shlex
 import shutil
 import subprocess
+import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
 from dataclasses import field
 from pathlib import Path
+from typing import Union
 
 
 class CommandNotFound(RuntimeError):
@@ -263,13 +265,17 @@ class Command:
         return ret
 
 
+# Should be imported from here.
+local = Local()
+
+
 @dataclass(frozen=True)
 class LocalCommand(Command):
     """
     Command returned by Local()["some_command"]. Follows local contexts.
     """
 
-    _local: Local = field(kw_only=True, repr=False)
+    _local: Local = field(kw_only=True, repr=False, default=local)
 
     def _which(self, exe):
         return shutil.which(exe, path=self._local._env.get("PATH", ""))
@@ -280,7 +286,5 @@ class LocalCommand(Command):
         return base
 
 
-# Should be imported from here.
-local = Local()
 # We must assume git is installed
 git = local["git"]

@@ -7,13 +7,13 @@ Return data to a cassandra server
 :maturity:      new as of 2015.2
 :depends:       salt.modules.cassandra_cql
 :depends:       DataStax Python Driver for Apache Cassandra
-                https://github.com/datastax/python-driver
+                https://github.com/apache/cassandra-python-driver
                 pip install cassandra-driver
 :platform:      all
 
 :configuration:
     To enable this returner, the minion will need the DataStax Python Driver
-    for Apache Cassandra ( https://github.com/datastax/python-driver )
+    for Apache Cassandra ( https://github.com/apache/cassandra-python-driver )
     installed and the following values configured in the minion or master
     config. The list of cluster IPs must include at least one cassandra node
     IP address. No assumption or default will be used for the cluster IPs.
