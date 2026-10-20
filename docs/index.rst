@@ -9,6 +9,7 @@ Salt Extension for interacting with Cassandra
   :hidden:
 
   topics/installation
+  topics/ansible-to-salt
 
 .. toctree::
   :maxdepth: 2
@@ -16,6 +17,7 @@ Salt Extension for interacting with Cassandra
   :hidden:
 
   ref/modules/index
+  ref/states/index
   ref/returners/index
 
 .. toctree::

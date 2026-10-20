@@ -10,4 +10,5 @@ _________________
     :toctree:
 
     cassandra_cql
+    cassandra_admin
     cassandra_mod

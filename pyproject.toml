@@ -50,6 +50,7 @@ Source = "https://github.com/salt-extensions/saltext-cassandra"
 Tracker = "https://github.com/salt-extensions/saltext-cassandra/issues"
 
 [project.optional-dependencies]
+cassandra = ["cassandra-driver"]
 changelog = ["towncrier==25.8.0"]
 dev = [
     "nox[uv]>=2024.3,!=2025.05.01",
