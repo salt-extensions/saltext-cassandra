@@ -46,6 +46,49 @@ def test_nodetool_rejects_non_string_arguments():
         cassandra_admin.nodetool("repair", ["app", 4], nodetool_path="/usr/bin/nodetool")
 
 
+@pytest.mark.parametrize("arguments", ["app", [1]])
+def test_nodetool_rejects_invalid_arguments(arguments):
+    with pytest.raises(CommandExecutionError, match="arguments must be a list"):
+        cassandra_admin.nodetool("repair", arguments, nodetool_path="/usr/bin/nodetool")
+
+
+@pytest.mark.parametrize("flags", ["--verbose", [1]])
+def test_nodetool_rejects_invalid_flags(flags):
+    with pytest.raises(CommandExecutionError, match="flags must be a list"):
+        cassandra_admin.nodetool("repair", flags=flags, nodetool_path="/usr/bin/nodetool")
+
+
+def test_nodetool_requires_executable(monkeypatch):
+    monkeypatch.setattr(cassandra_admin.salt.utils.path, "which", lambda _: None)
+    with pytest.raises(CommandExecutionError, match="Could not find"):
+        cassandra_admin.nodetool("repair")
+
+
+def test_nodetool_builds_optional_connection_arguments():
+    result = cassandra_admin.nodetool(
+        "repair",
+        nodetool_path="/usr/bin/nodetool",
+        flags=["-Dfoo=bar"],
+        host="db1",
+        port=7199,
+        username="admin",
+        password_file="/tmp/jmx.password",
+    )
+    assert result["argv"] == [
+        "/usr/bin/nodetool",
+        "-Dfoo=bar",
+        "--host",
+        "db1",
+        "--port",
+        "7199",
+        "--username",
+        "admin",
+        "--password-file",
+        "/tmp/jmx.password",
+        "repair",
+    ]
+
+
 def test_nodetool_reports_nonzero_exit():
     cassandra_admin.__salt__["cmd.run_all"].return_value = {
         "retcode": 2,
@@ -53,6 +96,22 @@ def test_nodetool_reports_nonzero_exit():
     }
     with pytest.raises(CommandExecutionError, match="repair failed"):
         cassandra_admin.nodetool("repair", nodetool_path="/usr/bin/nodetool")
+
+
+@pytest.mark.parametrize(
+    "result",
+    [{"retcode": 1, "stdout": "failure"}, {"retcode": 1}, {"retcode": 0}],
+)
+def test_nodetool_error_fallbacks_and_empty_output(result):
+    cassandra_admin.__salt__["cmd.run_all"].return_value = result
+    if result.get("retcode"):
+        expected = result.get("stderr") or result.get("stdout") or "nodetool failed"
+        with pytest.raises(CommandExecutionError, match=expected):
+            cassandra_admin.nodetool("repair", nodetool_path="/usr/bin/nodetool")
+    else:
+        response = cassandra_admin.nodetool("repair", nodetool_path="/usr/bin/nodetool")
+        assert response["stdout"] == ""
+        assert response["stderr"] == ""
 
 
 def test_status_parses_cluster_output():
@@ -80,3 +139,18 @@ def test_status_parses_cluster_output():
             "rack": "rack1",
         }
     ]
+
+
+def test_status_returns_unparsed_lines_and_skips_headers():
+    cassandra_admin.__salt__["cmd.run_all"].return_value = {
+        "retcode": 0,
+        "stdout": "\n-- heading\nDatacenter: dc1\nnew-format node data\n",
+    }
+    assert cassandra_admin.status(nodetool_path="/usr/bin/nodetool") == [
+        {"unparsed": ["new-format node data"]}
+    ]
+
+
+def test_status_passes_optional_keyspace():
+    cassandra_admin.status("app", nodetool_path="/usr/bin/nodetool")
+    assert cassandra_admin.__salt__["cmd.run_all"].call_args.args[0][-2:] == ["status", "app"]
