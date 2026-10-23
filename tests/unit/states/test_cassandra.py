@@ -68,7 +68,9 @@ def test_keyspace_present_updates_options():
         }
     ]
     result = cassandra_state.keyspace_present(
-        "app", {"class": "SimpleStrategy", "replication_factor": 2}, durable_writes=False
+        "app",
+        {"class": "SimpleStrategy", "replication_factor": 2},
+        durable_writes=False,
     )
     assert result["result"] is True
     assert "ALTER KEYSPACE" in _salt()["cassandra_cql.cql_query"].call_args.args[0]
@@ -90,7 +92,12 @@ def test_keyspace_present_update_test_mode():
 
 @pytest.mark.parametrize(
     "replication,durable_writes",
-    [({}, True), ({"replication_factor": 2}, True), ({"class": object()}, True), ({"class": "x"}, 1)],
+    [
+        ({}, True),
+        ({"replication_factor": 2}, True),
+        ({"class": object()}, True),
+        ({"class": "x"}, 1),
+    ],
 )
 def test_keyspace_present_rejects_invalid_options(replication, durable_writes):
     result = cassandra_state.keyspace_present("app", replication, durable_writes)
@@ -135,21 +142,27 @@ def test_table_present_rejects_non_create_statement():
 
 
 def test_table_present_rejects_missing_keyspace():
-    result = cassandra_state.table_present("events", "missing", "CREATE TABLE events (id int)")
+    result = cassandra_state.table_present(
+        "events", "missing", "CREATE TABLE events (id int)"
+    )
     assert result["result"] is False
 
 
 def test_table_present_is_unchanged_when_table_exists():
     _salt()["cassandra_cql.keyspace_exists"].return_value = True
     _salt()["cassandra_cql.cql_query"].return_value = [{"table_name": "events"}]
-    result = cassandra_state.table_present("events", "app", "CREATE TABLE events (id int)")
+    result = cassandra_state.table_present(
+        "events", "app", "CREATE TABLE events (id int)"
+    )
     assert result["result"] is True
     assert result["changes"] == {}
 
 
 def test_table_present_creates_missing_table():
     _salt()["cassandra_cql.keyspace_exists"].return_value = True
-    result = cassandra_state.table_present("events", "app", "CREATE TABLE events (id int)")
+    result = cassandra_state.table_present(
+        "events", "app", "CREATE TABLE events (id int)"
+    )
     assert result["result"] is True
     assert _salt()["cassandra_cql.cql_query"].call_count == 2
 
