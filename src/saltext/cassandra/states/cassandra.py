@@ -312,7 +312,7 @@ def role_present(name, password=None, login=True, superuser=False):
 
     CLI Example:
 
-    .. code-block:: yaml
+    .. code-block:: text
 
         app_reader:
           cassandra.role_present:

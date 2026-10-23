@@ -12,7 +12,7 @@ be installed there. Connection settings can be supplied through the existing
 `cassandra` minion configuration or pillar options documented by
 `cassandra_cql`.
 
-```yaml
+```text
 application_keyspace:
   cassandra.keyspace_present:
     - replication:
