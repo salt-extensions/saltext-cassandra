@@ -5,7 +5,6 @@ import re
 import salt.utils.path
 from salt.exceptions import CommandExecutionError
 
-
 __virtualname__ = "cassandra_admin"
 
 

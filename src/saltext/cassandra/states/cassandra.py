@@ -4,7 +4,6 @@ import time
 
 from salt.exceptions import CommandExecutionError
 
-
 __virtualname__ = "cassandra"
 
 
@@ -93,11 +92,7 @@ def cluster_healthy(name, max_unhealthy_nodes=0, polls=1, interval=30, **connect
             return _ret(name, False, "Could not parse all nodetool status output")
         if not nodes:
             return _ret(name, False, "Cassandra status returned no nodes")
-        unhealthy = [
-            node
-            for node in nodes
-            if node.get("status") != "U" or node.get("state") != "N"
-        ]
+        unhealthy = [node for node in nodes if node.get("status") != "U" or node.get("state") != "N"]
         if len(unhealthy) <= max_unhealthy_nodes:
             return _ret(name, True, f"Cluster has {len(unhealthy)} unhealthy node(s)")
         if attempt < polls - 1 and interval:
@@ -386,10 +381,7 @@ def role_absent(name):
           cassandra.role_absent: []
     """
     identifier = _identifier(name)
-    rows = _query(
-        "SELECT role FROM system_auth.roles "
-        f"WHERE role = {_literal(name)}"
-    )
+    rows = _query("SELECT role FROM system_auth.roles " f"WHERE role = {_literal(name)}")
     if not rows:
         return _ret(name, True, "Role is already absent")
     changes = {"old": name, "new": ""}

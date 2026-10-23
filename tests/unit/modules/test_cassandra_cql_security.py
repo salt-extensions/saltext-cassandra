@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytest
 from salt.exceptions import CommandExecutionError
 
-import saltext.cassandra.modules.cassandra_cql as cassandra_cql
+from saltext.cassandra.modules import cassandra_cql
 
 
 def test_redact_query_password_literals():

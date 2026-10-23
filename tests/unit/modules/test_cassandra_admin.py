@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytest
 from salt.exceptions import CommandExecutionError
 
-import saltext.cassandra.modules.cassandra_admin as cassandra_admin
+from saltext.cassandra.modules import cassandra_admin
 
 
 @pytest.fixture
@@ -17,7 +17,10 @@ def configure_loader_modules():
     }
 
 
-def test_nodetool_uses_argv_without_shell(configure_loader_modules):
+pytestmark = pytest.mark.usefixtures("configure_loader_modules")
+
+
+def test_nodetool_uses_argv_without_shell():
     run_all = cassandra_admin.__salt__["cmd.run_all"]
     result = cassandra_admin.nodetool(
         "repair",
@@ -43,7 +46,7 @@ def test_nodetool_rejects_non_string_arguments():
         cassandra_admin.nodetool("repair", ["app", 4], nodetool_path="/usr/bin/nodetool")
 
 
-def test_nodetool_reports_nonzero_exit(configure_loader_modules):
+def test_nodetool_reports_nonzero_exit():
     cassandra_admin.__salt__["cmd.run_all"].return_value = {
         "retcode": 2,
         "stderr": "repair failed",
@@ -52,7 +55,7 @@ def test_nodetool_reports_nonzero_exit(configure_loader_modules):
         cassandra_admin.nodetool("repair", nodetool_path="/usr/bin/nodetool")
 
 
-def test_status_parses_cluster_output(configure_loader_modules):
+def test_status_parses_cluster_output():
     cassandra_admin.__salt__["cmd.run_all"].return_value = {
         "retcode": 0,
         "stdout": (
