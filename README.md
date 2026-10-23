@@ -9,8 +9,8 @@ to [Salt's security guide][security].
 
 ## User Documentation
 
-For setup and usage instructions, please refer to the
-module docstrings (for now, documentation is coming!).
+For setup instructions and Cassandra state, execution module, and server
+configuration examples, see the [documentation](docs/index.rst).
 
 ## Contributing
 

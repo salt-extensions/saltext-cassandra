@@ -170,6 +170,17 @@ def _async_log_errors(errors):
     log.error("Cassandra_cql asynchronous call returned: %s", errors)
 
 
+def _redact_query(query):
+    """Hide CQL password literals before logging failed statements."""
+    if not isinstance(query, str):
+        return query
+    return re.sub(
+        r"(?i)(\b(?:HASHED\s+)?PASSWORD\s*=\s*)'(?:''|[^'])*'",
+        r"\1'<redacted>'",
+        query,
+    )
+
+
 def _get_lbp_policy(name, **policy_args):
     """
     Returns the Load Balancer Policy class by name
@@ -488,8 +499,10 @@ def cql_query(
     try:
         results = session.execute(query)
     except BaseException as e:
-        log.error("Failed to execute query: %s\n reason: %s", query, e)
-        msg = f"ERROR: Cassandra query failed: {query} reason: {e}"
+        safe_query = _redact_query(query)
+        safe_error = _redact_query(str(e))
+        log.error("Failed to execute query: %s\n reason: %s", safe_query, safe_error)
+        msg = f"ERROR: Cassandra query failed: {safe_query} reason: {safe_error}"
         # pylint: disable=W0707
         raise CommandExecutionError(msg)
 
