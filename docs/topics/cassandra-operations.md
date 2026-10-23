@@ -92,9 +92,9 @@ service around these Cassandra-specific APIs:
 
 Package names, repository URLs, configuration paths, service names, and
 firewall providers vary by operating system and Cassandra distribution. A
-configurable Salt formula example is in
-[`examples/cassandra/`](../../examples/cassandra/README.md); copy it into a
-fileserver state tree and provide the documented Pillar values.
+configurable Salt formula example is in the repository's
+`examples/cassandra/` directory; copy it into a fileserver state tree and
+provide the documented Pillar values.
 
 The `cassandra.cluster_healthy` state checks for Up/Normal nodes and retries
 within the specified poll limit. It counts every node outside Up/Normal as
