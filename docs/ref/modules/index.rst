@@ -9,6 +9,6 @@ _________________
 .. autosummary::
     :toctree:
 
-    cassandra_cql
     cassandra_admin
+    cassandra_cql
     cassandra_mod

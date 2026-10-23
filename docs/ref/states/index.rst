@@ -2,7 +2,7 @@
 
 _____________
 State Modules
-___________
+_____________
 
 .. currentmodule:: saltext.cassandra.states
 
