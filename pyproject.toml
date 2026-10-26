@@ -55,7 +55,7 @@ Tracker = "https://github.com/salt-extensions/saltext-cassandra/issues"
 # allows opting in for pip-managed environments.
 [project.optional-dependencies]
 salt = [
-    "salt>=3006",
+    "salt>=3006.8",
 ]
 
 [dependency-groups]
@@ -66,7 +66,6 @@ dev_all = [
     {include-group = "tests"},
 ]
 dev_required = [
-    "cryptography>=42.0.5",
     "nox[uv]>=2026.07.11",
     "prek>=0.5.5 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'",
     "pre-commit>=3.0.0 ; sys_platform != 'linux' and sys_platform != 'darwin' and sys_platform != 'win32'",
